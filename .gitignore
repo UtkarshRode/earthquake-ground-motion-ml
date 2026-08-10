@@ -123,3 +123,8 @@ models/*epoch*
 *.tar
 *.tar.gz
 *.7z
+
+
+!data/
+!data/processed/
+!data/processed/final_test_predictions.csv
