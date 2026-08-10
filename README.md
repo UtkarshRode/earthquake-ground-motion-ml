@@ -15,9 +15,9 @@
 
 ---
 
-# 🚀 Live Demo
+## 🚀 Live Demo
 
-## [Launch the Interactive Streamlit Application →](https://earthquake-ground-motion-ml-c3ebpb3tww8ybtwgq2vdu.streamlit.app/)
+[**Open the deployed Streamlit app →**](https://earthquake-ground-motion-ml-c3ebpb3tww8ybtwgq2zvdu.streamlit.app/)
 
 The deployed application provides:
 
