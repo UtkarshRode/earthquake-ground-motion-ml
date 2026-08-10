@@ -1,174 +1,277 @@
-# 🌎 Earthquake Ground-Motion Prediction Using Machine Learning + Deep Learning
+# 🌎 Earthquake Ground-Motion Prediction Using Machine Learning and Deep Learning
 
-> **Large-scale earthquake ground-motion prediction with earthquake-level validation, physical feature engineering, interpretable deep learning, and an interactive Streamlit application.**
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://earthquake-ground-motion-ml-c3ebpb3tww8ybtwgq2vdu.streamlit.app/)
+[![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Machine%20Learning-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![LightGBM](https://img.shields.io/badge/LightGBM-Gradient%20Boosting-9ACD32)](https://lightgbm.readthedocs.io/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Deployed-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-ee4c2c.svg)](https://pytorch.org/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E.svg)](https://scikit-learn.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B.svg)](https://streamlit.io/)
-[![Status](https://img.shields.io/badge/Status-Portfolio%20Ready-success.svg)]()
+> An end-to-end geoscience machine-learning system for predicting earthquake ground motion from earthquake source parameters, propagation geometry, geographic information, and site conditions.
 
----
-
-## 1. Project Overview
-
-This project develops a machine-learning system for predicting **logarithmic Peak Ground Acceleration (log-PGA)** from earthquake source, propagation, geographic, and site-condition variables.
-
-The project combines:
-
-- large-scale ShakeMap observations
-- earthquake metadata
-- Vs30 site-condition information
-- physically motivated feature engineering
-- classical machine learning
-- a PyTorch multilayer perceptron
-- earthquake-grouped cross-validation
-- a completely unseen-earthquake test set
-- residual and spatial analysis
-- permutation feature importance
-- model response analysis
-- an interactive Streamlit application
-
-The central modeling decision is important:
-
-> **Observations from the same earthquake are kept together.**
-
-This avoids the overly optimistic performance that can occur when millions of correlated observations from one earthquake are randomly split between training and validation.
+**2.87M+ observations · 40 earthquakes · 13 final features · 4 model families · Earthquake-grouped validation · Unseen-earthquake testing · Interactive deployment**
 
 ---
 
-## 2. Executive Results
+## 🚀 Live Application
 
-### Dataset
+### [Launch the Interactive Streamlit Dashboard →](https://earthquake-ground-motion-ml-c3ebpb3tww8ybtwgq2vdu.streamlit.app/)
 
-| Quantity | Result |
+The deployed application provides an interactive interface for:
+
+- 🌎 Exploring completely unseen earthquake events
+- 📊 Comparing machine-learning and deep-learning models
+- 🔍 Investigating feature importance
+- 📈 Examining model response to physical variables
+- 🗺️ Visualizing observed, predicted, and residual ground motion
+- 🎯 Generating ground-motion predictions from user-defined earthquake/site parameters
+
+---
+
+# 📌 Project Snapshot
+
+| Component | Result |
 |---|---:|
-| Total observations | ~2.87 million |
-| Total earthquakes | 40 |
-| Training earthquakes | 28 |
-| Validation earthquakes | 6 |
-| Final unseen test earthquakes | 6 |
-| Final MLP input features | 13 |
+| Ground-motion observations | **2.87M+** |
+| Earthquake events | **40** |
+| Final model features | **13** |
+| Modeling approaches | **4** |
+| Training earthquakes | **28** |
+| Validation earthquakes | **6** |
+| Completely unseen test earthquakes | **6** |
+| Best grouped-CV R² | **0.8015** |
+| Unseen-earthquake R² | **0.6099** |
+| Final model | **PyTorch MLP** |
+| Deployment | **Streamlit Cloud** |
 
-### Grouped 5-Fold Cross-Validation
+---
+
+# 🏆 Key Results
+
+The final PyTorch multilayer perceptron achieved the strongest performance during earthquake-grouped cross-validation.
+
+## Grouped 5-Fold Cross-Validation
 
 | Model | RMSE | MAE | R² |
 |---|---:|---:|---:|
-| **PyTorch MLP** | **0.2128** | **0.1777** | **0.8015** |
+| 🥇 **PyTorch MLP** | **0.2128** | **0.1777** | **0.8015** |
 | Elastic Net | 0.2474 | 0.2080 | 0.7317 |
 | Physical Elastic Net | 0.2999 | 0.2353 | 0.6021 |
 | LightGBM | 0.3169 | 0.2385 | 0.5579 |
 
-### Completely Unseen Earthquake Test
+The MLP was selected as the final model because it achieved the lowest grouped-CV RMSE and MAE and the highest grouped-CV R².
 
-| Metric | Result |
+---
+
+# 🎯 Final Unseen-Earthquake Evaluation
+
+The most important evaluation in this project is the final test on **six earthquake events that were completely excluded from model development**.
+
+| Metric | Final Unseen-Earthquake Test |
 |---|---:|
 | RMSE | **0.3113** |
 | MAE | **0.2800** |
 | R² | **0.6099** |
 
-The gap between grouped CV and the final unseen-earthquake test is deliberately reported rather than hidden. It demonstrates that generalization to new earthquake events is substantially harder than interpolation within the development distribution.
+The difference between grouped cross-validation and unseen-event performance is intentionally reported rather than hidden.
+
+```text
+Grouped CV R²
+     0.8015
+        ↓
+Unseen Test R²
+     0.6099
+```
+
+This demonstrates that the model performs well on held-out earthquake groups while also revealing the additional difficulty of generalizing to completely unseen seismic events.
 
 ---
 
-## 3. Problem Statement
+# 🔬 Why Earthquake-Level Validation?
 
-Peak Ground Acceleration is a fundamental ground-motion quantity used in earthquake engineering and hazard analysis.
+A conventional random train-test split would be problematic for this dataset.
 
-The objective here is **not earthquake early warning** and the application should not be interpreted as a structural-safety system.
+Each earthquake contains many spatial observations. If observations from the same earthquake appear in both training and validation sets, the model can effectively learn event-specific characteristics.
 
-Instead, the project asks:
+That can lead to overly optimistic validation performance.
 
-> **Given earthquake source parameters, propagation geometry, location, and site-condition information, how accurately can machine-learning models estimate observed ground motion?**
+Instead, this project keeps entire earthquakes together during validation.
 
-The prediction target is:
+### Dataset-level split
 
 ```text
-log_PGA = log10(PGA)
+                    40 Earthquakes
+                          │
+          ┌───────────────┼───────────────┐
+          │               │               │
+       Training       Validation        Final Test
+       28 events       6 events         6 events
+          │               │               │
+          └───────────────┴───────────────┘
+                          │
+             Completely unseen events
 ```
 
-and the deployed application converts the prediction back to PGA units using:
+The final test therefore answers a more meaningful question:
+
+> **Can the model generalize to earthquake events that were not observed during model development?**
+
+---
+
+# 🎯 Project Objective
+
+The objective is to predict **logarithmic Peak Ground Acceleration (log-PGA)** using machine learning and deep learning.
+
+The model uses information describing:
+
+### Earthquake source
+
+- Magnitude
+- Event depth
+
+### Propagation geometry
+
+- Epicentral distance
+- Hypocentral distance
+- Distance transformations
+- Magnitude-distance interactions
+- Depth-distance interactions
+
+### Site conditions
+
+- Vs30
+- Log-transformed Vs30
+- Vs30 availability
+
+### Geographic information
+
+- Grid latitude
+- Grid longitude
+
+The project combines these variables into a physically informed machine-learning pipeline.
+
+---
+
+# 🌍 Scientific Background
+
+Peak Ground Acceleration (PGA) is a commonly used measure of the intensity of ground shaking during an earthquake.
+
+Ground motion is influenced by several factors:
 
 ```text
-PGA = 10 ^ predicted_log_PGA
+Earthquake Source
+       │
+       ├── Magnitude
+       └── Depth
+       │
+       ↓
+Propagation
+       │
+       ├── Epicentral Distance
+       └── Hypocentral Distance
+       │
+       ↓
+Site Effects
+       │
+       └── Vs30
+       │
+       ↓
+Observed Ground Motion
+       │
+       ↓
+PGA
+```
+
+The relationship between these variables is nonlinear and can vary across earthquake events and locations.
+
+This makes the problem suitable for comparing:
+
+- Linear regularized models
+- Tree-based nonlinear models
+- Neural networks
+
+---
+
+# 📊 Dataset
+
+The integrated modeling dataset contains approximately **2.87 million ground-motion observations across 40 earthquakes**.
+
+The data combines earthquake source information, ShakeMap observations, geographic coordinates, propagation distances, and Vs30-based site information.
+
+The integrated dataset contains 26 columns:
+
+```text
+grid_lon
+grid_lat
+PGA
+PGV
+MMI
+PSA03
+PSA10
+PSA30
+event_id
+magnitude
+event_lat
+event_lon
+epicentral_distance_km
+hypocentral_distance_km
+event_depth
+Vs30
+Vs30_clean
+site_class
+log_PGA
+log_distance
+log_epicentral_distance
+magnitude_distance_interaction
+magnitude_squared
+depth_distance_interaction
+log_Vs30
+Vs30_available
 ```
 
 ---
 
-## 4. Why Earthquake-Level Validation?
+# 🧹 Data Processing
 
-A random row-wise train/test split would be inappropriate for this problem.
-
-A single earthquake can contain tens of thousands of spatial observations. Those observations share:
-
-- the same event magnitude
-- the same event depth
-- the same source
-- related spatial structure
-- related propagation characteristics
-
-Randomly distributing those observations across train and validation sets can therefore leak event-specific information.
-
-### Validation design
+The project includes a multi-stage data-processing pipeline.
 
 ```text
-40 earthquakes
-      │
-      ├── Development events: 34
-      │       ├── 28 training events
-      │       └── 6 validation events
-      │
-      └── Final test: 6 completely unseen earthquakes
-```
-
-Grouped 5-fold CV is performed at the **earthquake-event level**, not the observation level.
-
-This is one of the main methodological strengths of the project.
-
----
-
-## 5. Data Pipeline
-
-```text
-Earthquake Metadata
-        │
-ShakeMap Ground Motion
-        │
-Vs30 / Site Conditions
-        │
-        ▼
-Data Cleaning + Quality Control
-        │
-        ▼
-Physical / Exploratory Analysis
-        │
-        ▼
+Raw Earthquake Data
+        ↓
+Quality Control
+        ↓
+ShakeMap Processing
+        ↓
+Spatial Grid Processing
+        ↓
+Earthquake Metadata Integration
+        ↓
+Vs30 Integration
+        ↓
+Missing-Value Handling
+        ↓
 Feature Engineering
-        │
-        ├───────────────┐
-        ▼               ▼
-Classical ML        PyTorch MLP
-        │               │
-        └───────┬───────┘
-                ▼
-        Earthquake-Grouped CV
-                │
-                ▼
-      Final Unseen-Event Test
-                │
-        ┌───────┼────────┐
-        ▼       ▼        ▼
-     Metrics Residuals Interpretability
-                │
-                ▼
-        Streamlit Dashboard
+        ↓
+Final Modeling Dataset
 ```
+
+The processing pipeline includes:
+
+- Data inspection
+- Missing-value analysis
+- Physical consistency checks
+- Ground-motion transformations
+- Distance calculations
+- Vs30 integration
+- Event-level organization
+- Feature generation
+- Train/validation/test separation
 
 ---
 
-## 6. Final Feature Set
+# 🧠 Feature Engineering
 
-The final MLP uses 13 features:
+The final neural network uses **13 features**.
 
 ```text
 1.  magnitude
@@ -186,211 +289,574 @@ The final MLP uses 13 features:
 13. grid_lon
 ```
 
-### Physical motivation
-
-- **Magnitude** captures source strength.
-- **Depth** describes source geometry.
-- **Epicentral / hypocentral distance** capture propagation effects.
-- **Log distance** provides a more appropriate representation of attenuation.
-- **Magnitude²** allows nonlinear source scaling.
-- **Magnitude × distance** captures source-distance interaction.
-- **Depth × distance** captures coupled source geometry.
-- **Vs30** represents near-surface site conditions.
-- **log(Vs30)** gives a transformed site-response representation.
-- **Vs30 availability** explicitly tells the model whether the site measurement exists.
-- **Latitude / longitude** retain geographic/spatial information.
-
 ---
 
-## 7. Models Compared
+## Logarithmic Distance
 
-### Elastic Net
+Ground-motion attenuation is commonly represented using logarithmic distance relationships.
 
-A regularized linear baseline providing a strong interpretable reference.
-
-### Physical Elastic Net
-
-An Elastic Net using the physically engineered feature representation.
-
-### LightGBM
-
-A nonlinear tree-based model used to test whether boosted decision trees outperform the engineered linear baseline.
-
-### PyTorch MLP
-
-The final deep-learning model:
+The project therefore uses:
 
 ```text
-13
- ↓
-Linear(64)
- ↓
-ReLU
- ↓
-BatchNorm(64)
- ↓
-ReLU
- ↓
-Linear(32)
- ↓
-ReLU
- ↓
-BatchNorm(32)
- ↓
-ReLU
- ↓
-Linear(16)
- ↓
-ReLU
- ↓
-Linear(1)
+log_distance = log10(hypocentral_distance)
 ```
 
-The final checkpoint was verified against the expected state-dict architecture.
+This provides a more appropriate representation of the large dynamic range of source-to-site distances.
 
 ---
 
-## 8. Interpretation
+## Magnitude Nonlinearity
 
-Permutation importance identifies the features whose disruption causes the largest degradation in model performance.
+Magnitude is transformed using:
 
-The strongest contributors include:
+```text
+magnitude_squared = magnitude²
+```
 
-1. `event_depth`
-2. `depth_distance_interaction`
-3. `log_distance`
-4. `log_Vs30`
-5. `Vs30_clean`
-6. spatial coordinates
-7. hypocentral distance
-8. magnitude
-
-The result is useful because it does not simply rank arbitrary engineered columns: the dominant features correspond to meaningful earthquake-source, propagation, and site-condition effects.
+This allows the linear baseline models to represent some nonlinear magnitude behavior.
 
 ---
 
-## 9. Response Analysis
+## Magnitude-Distance Interaction
 
-The application includes one-dimensional model-response analyses for:
+The model includes:
 
-- event depth
-- hypocentral distance
-- magnitude
+```text
+magnitude_distance_interaction
+    = magnitude × log_distance
+```
+
+This allows the effect of distance to vary with earthquake magnitude.
+
+---
+
+## Depth-Distance Interaction
+
+The project also includes:
+
+```text
+depth_distance_interaction
+    = event_depth × log_distance
+```
+
+This captures an additional interaction between earthquake depth and propagation geometry.
+
+---
+
+## Vs30 Transformation
+
+Vs30 is used as a proxy for local site conditions.
+
+A logarithmic transformation is applied:
+
+```text
+log_Vs30 = log10(Vs30)
+```
+
+The model also retains:
+
+```text
+Vs30_available
+```
+
+as an indicator of whether Vs30 information was available.
+
+This allows the model to distinguish between:
+
+- A known site condition
+- An imputed site condition
+
+---
+
+# 🤖 Models Evaluated
+
+Four model families were evaluated.
+
+---
+
+## 1. Elastic Net
+
+Elastic Net provides an interpretable regularized linear baseline.
+
+It combines:
+
+- L1 regularization
+- L2 regularization
+
+This provides a useful benchmark for determining how much performance can be obtained from approximately linear relationships.
+
+---
+
+## 2. Physical Feature Elastic Net
+
+A second linear model was evaluated using physically motivated engineered features.
+
+This provides a comparison between:
+
+```text
+Raw / simpler representation
+            vs
+Physically engineered representation
+```
+
+---
+
+## 3. LightGBM
+
+LightGBM provides a nonlinear tree-based machine-learning benchmark.
+
+It can automatically model:
+
+- Nonlinear relationships
+- Feature interactions
+- Threshold effects
+
+without requiring all nonlinearities to be manually specified.
+
+---
+
+## 4. PyTorch MLP
+
+The final model is a fully connected multilayer perceptron implemented using PyTorch.
+
+### Architecture
+
+```text
+Input
+13 features
+    │
+    ▼
+Linear: 13 → 64
+    │
+    ▼
+Batch Normalization
+    │
+    ▼
+Activation
+    │
+    ▼
+Linear: 64 → 32
+    │
+    ▼
+Batch Normalization
+    │
+    ▼
+Activation
+    │
+    ▼
+Linear: 32 → 16
+    │
+    ▼
+Activation
+    │
+    ▼
+Linear: 16 → 1
+    │
+    ▼
+Predicted log-PGA
+```
+
+The trained model is stored in:
+
+```text
+models/pga_mlp_development.pt
+```
+
+---
+
+# 📈 Model Comparison
+
+The grouped cross-validation results are:
+
+| Rank | Model | RMSE | MAE | R² |
+|---:|---|---:|---:|---:|
+| 🥇 | **PyTorch MLP** | **0.2128** | **0.1777** | **0.8015** |
+| 🥈 | Elastic Net | 0.2474 | 0.2080 | 0.7317 |
+| 🥉 | Physical Elastic Net | 0.2999 | 0.2353 | 0.6021 |
+| 4 | LightGBM | 0.3169 | 0.2385 | 0.5579 |
+
+The MLP provides the best overall grouped-CV performance.
+
+---
+
+# 🔍 Model Interpretability
+
+Predictive performance alone is not sufficient for this project.
+
+The final system therefore includes several interpretability analyses.
+
+---
+
+## Permutation Feature Importance
+
+Each feature is randomly permuted while keeping the trained model fixed.
+
+The resulting increase in RMSE provides an estimate of how strongly the model depends on that feature.
+
+The analysis found:
+
+- **Event depth** to be the strongest feature by permutation importance.
+- Depth-distance interaction to provide substantial additional information.
+- Distance-related features to be highly influential.
+- Vs30-related variables to contribute meaningfully.
+- Magnitude to contribute to prediction.
+- Geographic coordinates to provide additional predictive information.
+
+A notable observation is that:
+
+```text
+Vs30_available
+```
+
+has negative permutation RMSE increase in the reported analysis.
+
+This should not be interpreted as proof that Vs30 availability is physically harmful. It indicates that the feature's standalone permutation behavior is affected by feature interactions and redundancy within the trained model.
+
+---
+
+# 📈 Model Response Analysis
+
+The model response is evaluated by changing one physical input variable while holding the other inputs approximately fixed.
+
+Response analyses are available for:
+
+- Event depth
+- Hypocentral distance
+- Magnitude
 - Vs30
 
-These response curves provide a sanity check on whether the learned model behaves consistently with broad physical expectations.
-
-They should be interpreted as **model-response diagnostics**, not causal relationships.
+These curves help inspect whether the learned model behaves in physically meaningful ways.
 
 ---
 
-## 10. Unseen-Earthquake Analysis
+# 🧪 Residual Analysis
 
-The final test contains six earthquakes that were not used during model development.
+Residuals are calculated as:
 
-The application allows each event to be explored interactively.
+```text
+Residual = Observed log-PGA − Predicted log-PGA
+```
 
-For each event it provides:
+The project evaluates residual behavior against:
 
-- observation count
-- RMSE
-- MAE
-- R²
-- observed mean
-- predicted mean
-- mean residual
-- prediction-level records
-- observed spatial ground motion
-- predicted spatial ground motion
-- spatial residuals
-- observed-vs-predicted comparison
+- Magnitude
+- Distance
+- Depth
+- Vs30
 
-This makes the final evaluation auditable rather than reducing the entire project to one metric.
+Additional analyses include:
+
+- Residual correlation matrix
+- Event-level residual summaries
+- Absolute-error correlations
+- Vs30 availability analysis
+- Per-event test results
 
 ---
 
-## 11. Streamlit Application
+# 🗺️ Spatial Analysis
 
-The application is organized into five major sections:
+The project compares the observed and predicted spatial distributions of ground motion.
+
+Three major spatial visualizations are generated.
+
+### Observed Ground Motion
+
+```text
+Observed log-PGA
+```
+
+### Predicted Ground Motion
+
+```text
+Predicted log-PGA
+```
+
+### Residual Ground Motion
+
+```text
+Observed log-PGA − Predicted log-PGA
+```
+
+These maps help identify geographic patterns and systematic errors that aggregate metrics may not reveal.
+
+---
+
+# 📊 Key Visualizations
+
+The repository contains the main analysis figures.
+
+### Observed vs Predicted
+
+![Observed vs Predicted](figures/observed_vs_predicted_log_pga.png)
+
+### Permutation Feature Importance
+
+![Feature Importance](figures/mlp_permutation_feature_importance.png)
+
+### Residual vs Depth
+
+![Residual vs Depth](figures/residual_vs_depth.png)
+
+### Residual vs Distance
+
+![Residual vs Distance](figures/residual_vs_distance.png)
+
+### Residual vs Magnitude
+
+![Residual vs Magnitude](figures/residual_vs_magnitude.png)
+
+### Residual vs Vs30
+
+![Residual vs Vs30](figures/residual_vs_vs30.png)
+
+---
+
+# 🗺️ Spatial Ground-Motion Maps
+
+### Observed
+
+![Observed Spatial Ground Motion](figures/spatial_observed_log_pga.png)
+
+### Predicted
+
+![Predicted Spatial Ground Motion](figures/spatial_predicted_log_pga.png)
+
+### Residual
+
+![Spatial Residual Map](figures/spatial_residual_map.png)
+
+---
+
+# 🖥️ Interactive Streamlit Dashboard
+
+The project is deployed as a complete interactive Streamlit application.
+
+## Dashboard Sections
 
 ### 🏠 Overview
 
-High-level project objective, dataset scale, validation design, and headline results.
+The Overview page communicates:
+
+- Dataset size
+- Number of earthquake events
+- Grouped cross-validation performance
+- Unseen-earthquake performance
+- Project objective
+- Validation strategy
+- Modeling pipeline
+
+---
 
 ### 🌎 Earthquake Explorer
 
-Interactive investigation of completely unseen test earthquakes.
+The Earthquake Explorer allows users to select one of the six completely unseen earthquake events.
 
-### 📊 Model Comparison
+For each event, the dashboard reports:
 
-Comparison of classical ML models and the final PyTorch MLP.
+- Number of observations
+- RMSE
+- MAE
+- R²
+- Observed mean
+- Predicted mean
+- Mean residual
 
-### 🔍 Interpretability
+Users can also inspect individual prediction records.
 
-Permutation importance and model-response analysis.
+---
+
+### 🤖 Model Comparison
+
+The Model Comparison page displays:
+
+- Grouped 5-fold CV RMSE
+- Grouped 5-fold CV MAE
+- Grouped 5-fold CV R²
+- Model ranking
+- Final unseen-earthquake performance
+
+---
+
+### 🔎 Interpretability
+
+The Interpretability page contains:
+
+- Permutation feature importance
+- Response to depth
+- Response to hypocentral distance
+- Response to magnitude
+- Response to Vs30
+
+---
 
 ### 🎯 PGA Prediction
 
-Interactive inference using:
+The PGA Prediction page provides an interactive inference interface.
 
-- magnitude
-- depth
-- epicentral distance
-- hypocentral distance
-- Vs30
-- latitude
-- longitude
-
-The deployed inference pipeline uses the saved:
+Users can provide:
 
 ```text
-pga_mlp_development.pt
-pga_scaler.pkl
-pga_imputer.pkl
+Magnitude
+Depth
+Epicentral Distance
+Hypocentral Distance
+Vs30
+Latitude
+Longitude
 ```
 
-with the same 13-feature ordering used during development.
+The application performs the same feature engineering and preprocessing used during model development.
+
+It then returns:
+
+```text
+Predicted log-PGA
+Predicted PGA
+```
 
 ---
 
-## 12. Example Inference
+# 🔄 Production Inference Pipeline
 
-Example input:
-
-```text
-Magnitude:             5.5
-Depth:                 20 km
-Epicentral distance:   100 km
-Hypocentral distance:  105 km
-Vs30:                  500 m/s
-Latitude:              20°
-Longitude:             78°
-```
-
-The application produces an estimated:
+The deployed prediction system follows:
 
 ```text
-log-PGA ≈ -0.0918
-PGA      ≈ 0.8094
+User Inputs
+     ↓
+Feature Engineering
+     ↓
+Feature Ordering
+     ↓
+Missing-Value Imputation
+     ↓
+Standard Scaling
+     ↓
+PyTorch MLP
+     ↓
+Predicted log-PGA
+     ↓
+PGA Transformation
+     ↓
+Dashboard Output
 ```
 
-This is a machine-learning estimate based on the training distribution and should not be interpreted as an operational earthquake-warning or structural-safety prediction.
+The final feature order is explicitly maintained to ensure that the deployed model receives inputs in the same order used during training.
 
 ---
 
-## 13. Project Structure
+# 📦 Model Artifacts
+
+The repository contains the trained inference artifacts.
 
 ```text
-EARTHQUAKE_ML_DL/
+models/
+├── pga_imputer.pkl
+├── pga_mlp_development.pt
+└── pga_scaler.pkl
+```
+
+### `pga_mlp_development.pt`
+
+Contains the trained PyTorch MLP state dictionary.
+
+### `pga_scaler.pkl`
+
+Contains the fitted `StandardScaler` used to standardize the 13 model features.
+
+### `pga_imputer.pkl`
+
+Contains the fitted imputation strategy used during preprocessing.
+
+---
+
+# 🏗️ Project Architecture
+
+```text
+                         ┌─────────────────────┐
+                         │   Raw Earthquake    │
+                         │       Data          │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ Data Acquisition &  │
+                         │ Quality Control     │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ ShakeMap Processing │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ Geological / Vs30   │
+                         │ Integration          │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ Feature Engineering │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                  ┌─────────────────┴─────────────────┐
+                  │                                   │
+                  ▼                                   ▼
+        ┌──────────────────┐                ┌──────────────────┐
+        │ Classical ML     │                │ PyTorch MLP      │
+        │                  │                │                  │
+        │ Elastic Net      │                │ Deep Learning    │
+        │ Physical EN      │                │                  │
+        │ LightGBM         │                │                  │
+        └────────┬─────────┘                └────────┬─────────┘
+                 │                                   │
+                 └────────────────┬──────────────────┘
+                                  ▼
+                       ┌─────────────────────┐
+                       │ Earthquake-Grouped  │
+                       │ Cross Validation    │
+                       └──────────┬──────────┘
+                                  │
+                                  ▼
+                       ┌─────────────────────┐
+                       │ Unseen Earthquake   │
+                       │ Final Evaluation    │
+                       └──────────┬──────────┘
+                                  │
+                    ┌─────────────┼─────────────┐
+                    ▼             ▼             ▼
+              Residuals   Interpretability   Spatial
+                            Analysis          Analysis
+                    │             │             │
+                    └─────────────┼─────────────┘
+                                  ▼
+                       ┌─────────────────────┐
+                       │ Streamlit Dashboard │
+                       └─────────────────────┘
+```
+
+---
+
+# 📁 Repository Structure
+
+```text
+earthquake-ground-motion-ml/
 │
 ├── app/
 │   ├── app.py
 │   └── utils.py
 │
 ├── data/
-│   ├── raw/
 │   ├── interim/
-│   └── processed/
+│   ├── processed/
+│   └── raw/
+│
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── DEPLOYMENT.md
+│   └── INTERVIEW_GUIDE.md
 │
 ├── figures/
 │   ├── mlp_permutation_feature_importance.png
@@ -404,9 +870,9 @@ EARTHQUAKE_ML_DL/
 │   └── spatial_residual_map.png
 │
 ├── models/
+│   ├── pga_imputer.pkl
 │   ├── pga_mlp_development.pt
-│   ├── pga_scaler.pkl
-│   └── pga_imputer.pkl
+│   └── pga_scaler.pkl
 │
 ├── notebooks/
 │   ├── 01_data_acquisition.ipynb
@@ -414,86 +880,232 @@ EARTHQUAKE_ML_DL/
 │   ├── 03_eda_and_physical_analysis.ipynb
 │   ├── 04_geological_feature_engineering.ipynb
 │   ├── 05_feature_engineering_and_dataset_design.ipynb
-│   └── 06_ml_baselines.ipynb
+│   ├── 06_ml_baselines.ipynb
+│   └── 07_modeling_evaluation_and_interpretability.ipynb
 │
 ├── reports/
+│   ├── figures/
+│   ├── master_results.json
+│   ├── methodology_summary.txt
+│   ├── project_metadata.json
+│   ├── results_summary.txt
+│   └── scientific_conclusions.txt
+│
+├── scripts/
+│   └── validate_project.py
+│
 ├── src/
+│   ├── __init__.py
+│   ├── evaluation.py
+│   ├── features.py
+│   └── models.py
+│
+├── MODEL_CARD.md
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── .gitignore
 ```
 
 ---
 
-## 14. Installation
+# 📚 Notebook Pipeline
 
-Create a virtual environment:
+The analysis is organized into sequential notebooks.
+
+| Notebook | Purpose |
+|---|---|
+| `01_data_acquisition.ipynb` | Earthquake data acquisition and initial inspection |
+| `02_shakemap_processing.ipynb` | ShakeMap processing and integration |
+| `03_eda_and_physical_analysis.ipynb` | Exploratory and physical analysis |
+| `04_geological_feature_engineering.ipynb` | Geological and Vs30 feature integration |
+| `05_feature_engineering_and_dataset_design.ipynb` | Final feature engineering and dataset construction |
+| `06_ml_baselines.ipynb` | Classical ML baseline development |
+| `07_modeling_evaluation_and_interpretability.ipynb` | MLP development, grouped CV, testing, residuals and interpretability |
+
+---
+
+# 📋 Processed Outputs
+
+The project produces a comprehensive set of processed analytical outputs.
+
+Important outputs include:
+
+```text
+final_model_comparison.csv
+final_model_results_table.csv
+final_test_metrics.csv
+final_test_predictions.csv
+final_test_residuals.csv
+final_test_per_event_results.csv
+final_test_event_residual_summary.csv
+mlp_grouped_cv_summary.csv
+mlp_permutation_feature_importance.csv
+mlp_response_depth.csv
+mlp_response_hypocentral_distance.csv
+mlp_response_magnitude.csv
+mlp_response_Vs30.csv
+residual_correlation_matrix.csv
+residual_by_vs30_availability.csv
+event_level_summary.csv
+distance_attenuation_summary.csv
+```
+
+These outputs make the modeling process reproducible and allow the dashboard to operate without rerunning the full training pipeline.
+
+---
+
+# 🛠️ Technology Stack
+
+## Programming
+
+- Python
+- Pandas
+- NumPy
+
+## Machine Learning
+
+- Scikit-learn
+- LightGBM
+
+## Deep Learning
+
+- PyTorch
+
+## Visualization
+
+- Matplotlib
+- Plotly
+
+## Application
+
+- Streamlit
+
+## Development
+
+- Jupyter Notebook
+- VS Code
+- Git
+- GitHub
+
+---
+
+# ⚙️ Running Locally
+
+## 1. Clone the repository
+
+```bash
+git clone https://github.com/UtkarshRode/earthquake-ground-motion-ml.git
+cd earthquake-ground-motion-ml
+```
+
+## 2. Create a virtual environment
+
+Windows:
 
 ```bash
 python -m venv .venv
 ```
 
-Activate it on Windows:
+Activate:
 
 ```bash
 .venv\Scripts\activate
 ```
 
-Install dependencies:
+Linux/macOS:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+## 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run the application:
+## 4. Run the Streamlit application
 
 ```bash
 streamlit run app/app.py
 ```
 
+The application should be available at:
+
+```text
+http://localhost:8501
+```
+
 ---
 
-## 15. Reproducibility
+# 🔁 Reproducibility
 
 The project separates:
 
-- raw data
-- processed data
-- trained model artifacts
-- notebooks
-- application code
-- figures
-- reports
+```text
+Data
+   ↓
+Processing
+   ↓
+Features
+   ↓
+Model Development
+   ↓
+Evaluation
+   ↓
+Deployment
+```
 
-The Streamlit inference layer does **not** retrain the model.
+The trained model artifacts are included so that the Streamlit application can perform inference without retraining the neural network.
 
-It loads the saved model, imputer, and scaler and reproduces the same feature-engineering logic used during model development.
-
----
-
-## 16. Important Limitations
-
-This project is a research/portfolio implementation rather than an operational seismic-hazard product.
-
-Important limitations include:
-
-- only 40 earthquake events are represented
-- unseen-event performance is substantially harder than grouped development validation
-- geographic coverage is finite
-- site-condition coverage is incomplete
-- model behavior outside the training distribution is uncertain
-- residuals vary considerably by earthquake
-- PGA estimates should not be used as structural-safety decisions
-- model-response curves describe learned associations, not causality
-
-These limitations are explicitly reported because reliable ML evaluation requires understanding where a model can fail.
+The feature order is explicitly maintained during inference.
 
 ---
 
-## 17. Key Takeaways
+# 🧪 Evaluation Philosophy
 
-### Modeling
+A major focus of this project is avoiding misleading validation.
 
-The PyTorch MLP achieved the strongest grouped CV performance:
+The evaluation process considers:
+
+### 1. Baseline performance
+
+How well can regularized linear models perform?
+
+### 2. Nonlinear machine learning
+
+Does a tree-based model capture additional nonlinear structure?
+
+### 3. Deep learning
+
+Does the MLP improve upon classical approaches?
+
+### 4. Grouped validation
+
+Does the model generalize across earthquake events?
+
+### 5. Completely unseen test events
+
+Does the model generalize to earthquake events never observed during development?
+
+### 6. Residual analysis
+
+Where does the model systematically fail?
+
+### 7. Interpretability
+
+Which features drive the predictions?
+
+This creates a more complete evaluation than reporting a single random train-test score.
+
+---
+
+# 🔎 Important Findings
+
+## Finding 1 — The MLP was the strongest model
+
+The PyTorch MLP achieved:
 
 ```text
 RMSE = 0.2128
@@ -501,9 +1113,13 @@ MAE  = 0.1777
 R²   = 0.8015
 ```
 
-### Generalization
+during grouped cross-validation.
 
-Performance on completely unseen earthquakes:
+---
+
+## Finding 2 — Unseen-event performance is lower
+
+The final unseen-earthquake evaluation achieved:
 
 ```text
 RMSE = 0.3113
@@ -511,54 +1127,315 @@ MAE  = 0.2800
 R²   = 0.6099
 ```
 
-### Scientific interpretation
-
-Depth, distance, source-distance interactions, and Vs30-related variables are among the strongest model contributors.
-
-### Engineering
-
-The final result is packaged as an interactive application rather than only a notebook.
+This demonstrates the additional challenge of generalizing across earthquake events.
 
 ---
 
-## 18. What Makes This Project Different?
+## Finding 3 — Event depth is highly influential
 
-This project is not simply:
+Permutation feature importance identified event depth as the strongest individual feature according to the reported RMSE increase.
 
-> "Train neural network → report R²."
+This highlights the importance of earthquake source geometry in the learned prediction function.
 
-Instead it combines:
+---
+
+## Finding 4 — Distance-related variables are important
+
+Distance and engineered distance interactions contribute substantially to prediction.
+
+This is consistent with the physical attenuation of ground motion with increasing source-to-site distance.
+
+---
+
+## Finding 5 — Site conditions matter
+
+Vs30-related features contribute meaningfully to the model.
+
+This supports incorporating local site characteristics rather than relying only on earthquake source parameters.
+
+---
+
+# ⚠️ Limitations
+
+This is a research and portfolio-oriented machine-learning system.
+
+It should **not** be interpreted as:
+
+- An earthquake early-warning system
+- A real-time emergency response system
+- A structural safety assessment
+- A replacement for engineering seismic hazard analysis
+- A replacement for established ground-motion prediction equations
+- A production safety-critical seismic forecasting system
+
+Model performance may change when applied to:
+
+- New geographic regions
+- Different earthquake mechanisms
+- Magnitudes outside the development range
+- Site conditions poorly represented in the dataset
+- Earthquakes with substantially different distributions
+- Data collected using different processing pipelines
+
+The gap between grouped-CV and unseen-event performance also demonstrates that event-specific variability remains an important source of uncertainty.
+
+---
+
+# 🔮 Future Improvements
+
+Potential future work includes:
+
+### More earthquake events
+
+Increase the number and geographic diversity of earthquake events.
+
+### Additional geological information
+
+Integrate:
+
+- Geological maps
+- Fault proximity
+- Lithology
+- Basin indicators
+- Elevation
+- Regional tectonic information
+
+### Improved uncertainty estimation
+
+Instead of providing only point predictions, future versions could estimate predictive uncertainty.
+
+Potential approaches include:
+
+- Ensembles
+- Quantile regression
+- Bayesian neural networks
+- Monte Carlo dropout
+
+### Advanced architectures
+
+Potential extensions include:
+
+- Residual neural networks
+- Attention-based architectures
+- Graph neural networks
+- Spatial neural networks
+
+### Stronger seismic baselines
+
+Compare against established empirical ground-motion prediction equations.
+
+### Geographic generalization
+
+Perform explicit region-held-out testing in addition to earthquake-held-out testing.
+
+---
+
+# 🎓 Machine-Learning Concepts Demonstrated
+
+This project demonstrates practical implementation of:
+
+- Regression
+- Feature engineering
+- Feature scaling
+- Missing-value imputation
+- Regularization
+- Elastic Net
+- Gradient boosting
+- LightGBM
+- Neural networks
+- PyTorch
+- Batch normalization
+- Nonlinear feature transformations
+- Feature interactions
+- Cross-validation
+- Grouped cross-validation
+- Event-level splitting
+- Unseen-group evaluation
+- Residual analysis
+- Permutation feature importance
+- Model response analysis
+- Model serialization
+- Production inference
+- Streamlit deployment
+
+---
+
+# 🌍 Geoscience Concepts Demonstrated
+
+The project combines machine learning with:
+
+- Earthquake source parameters
+- Earthquake magnitude
+- Earthquake depth
+- Peak Ground Acceleration
+- ShakeMap data
+- Epicentral distance
+- Hypocentral distance
+- Ground-motion attenuation
+- Vs30
+- Site classification
+- Spatial seismic analysis
+- Ground-motion residual analysis
+- Geological/site-condition integration
+
+---
+
+# 📖 Documentation
+
+Additional technical documentation is available in the repository.
+
+### Architecture
+
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+
+Describes the system architecture and data/model flow.
+
+### Deployment
+
+[`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
+
+Explains how the Streamlit application is deployed.
+
+### Interview Guide
+
+[`docs/INTERVIEW_GUIDE.md`](docs/INTERVIEW_GUIDE.md)
+
+Contains important project concepts and questions useful for technical interviews.
+
+### Model Card
+
+[`MODEL_CARD.md`](MODEL_CARD.md)
+
+Documents model purpose, intended use, evaluation, limitations and responsible interpretation.
+
+---
+
+# 📊 Project Outputs
+
+The repository contains:
+
+- Processed datasets
+- Model evaluation tables
+- Cross-validation results
+- Final predictions
+- Residual datasets
+- Feature importance results
+- Model response curves
+- Scientific analysis figures
+- Trained model artifacts
+- Streamlit application
+- Technical documentation
+
+This allows the project to be inspected at multiple levels:
 
 ```text
-Large-scale data
-+
-Domain knowledge
-+
-Physical feature engineering
-+
-Multiple ML baselines
-+
-Earthquake-grouped validation
-+
-Unseen-event testing
-+
-Residual diagnostics
-+
-Spatial diagnostics
-+
-Model interpretability
-+
-Production-style inference
-+
-Interactive deployment
+Scientific Analysis
+        ↓
+Data Processing
+        ↓
+Feature Engineering
+        ↓
+Model Development
+        ↓
+Model Evaluation
+        ↓
+Interpretability
+        ↓
+Deployment
 ```
-
-The central objective is therefore not just predictive accuracy, but **credible evaluation and interpretable scientific modeling**.
 
 ---
 
-## 19. Disclaimer
+# 🚀 Deployment
 
-This application is intended for research, educational, and portfolio purposes.
+The Streamlit application is deployed using Streamlit Community Cloud.
 
-It provides machine-learning estimates of ground motion based on the feature distribution and earthquake events represented in the development data. It is **not an earthquake early-warning system, seismic alert system, structural-safety assessment, or substitute for engineering analysis**.
+The deployed application loads:
+
+```text
+models/pga_mlp_development.pt
+models/pga_scaler.pkl
+models/pga_imputer.pkl
+```
+
+and performs inference through the same feature pipeline used during model development.
+
+### Live application
+
+**[Open Earthquake Ground-Motion Prediction →](https://earthquake-ground-motion-ml-c3ebpb3tww8ybtwgq2vdu.streamlit.app/)**
+
+---
+
+# 📌 Project Takeaways
+
+This project demonstrates that a strong machine-learning application in geoscience requires more than simply training a model.
+
+The complete workflow combines:
+
+```text
+Domain Knowledge
+      +
+Large-Scale Data Processing
+      +
+Physical Feature Engineering
+      +
+Multiple ML Baselines
+      +
+Deep Learning
+      +
+Rigorous Event-Level Validation
+      +
+Unseen-Event Testing
+      +
+Interpretability
+      +
+Residual Analysis
+      +
+Deployment
+```
+
+The final result is an end-to-end system that connects **geoscience, machine learning, deep learning, model evaluation, interpretability, and production-style deployment**.
+
+---
+
+# ⭐ Project Highlights
+
+```text
+2.87M+ ground-motion observations
+40 earthquake events
+13 final model features
+4 model families
+Earthquake-grouped 5-fold cross-validation
+6 completely unseen test earthquakes
+PyTorch MLP final model
+R² = 0.8015 grouped CV
+R² = 0.6099 unseen-event test
+Permutation feature importance
+Physical response analysis
+Residual diagnostics
+Spatial ground-motion analysis
+Interactive Streamlit dashboard
+Cloud deployment
+Reproducible model artifacts
+```
+
+---
+
+# 👤 Author
+
+## Utkarsh Rode
+
+IIT Kharagpur
+
+GitHub:  
+https://github.com/UtkarshRode
+
+---
+
+# 📄 Disclaimer
+
+This project is intended for educational, research, and portfolio purposes.
+
+The predictions generated by the application are machine-learning estimates based on the feature distributions and earthquake observations used during model development.
+
+They should not be interpreted as professional seismic hazard assessments, structural-safety evaluations, earthquake early warnings, or emergency-response recommendations.
